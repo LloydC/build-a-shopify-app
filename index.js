@@ -10,15 +10,18 @@ const request = require('request-promise');
 const apiKey = process.env.sps_API_KEY;
 const apiSecret = process.env.sps_API_SECRET;
 const scopes = 'read_products';
-const forwardingAddress = "https://0e926b1c.ngrok.io";
+const forwardingAddress = "https://404b8cd5.ngrok.io";
+
+app.set('view engine', 'ejs')
 
 app.get('/', (req, res) => {
-  res.send('Hello World!');
+  res.render('index')
 });
 
 app.get('/shopify', (req, res) => {
   const shop = req.query.shop;
   if (shop) {
+   
     const state = nonce();
     const redirectUri = forwardingAddress + '/shopify/callback';
     const installUrl = 'https://' + shop +
@@ -37,7 +40,7 @@ app.get('/shopify', (req, res) => {
 app.get('/shopify/callback', (req, res) => {
     const { shop, hmac, code, state } = req.query;
     const stateCookie = cookie.parse(req.headers.cookie).state;
-  
+
     if (state !== stateCookie) {
       return res.status(403).send('Request origin cannot be verified');
     }
